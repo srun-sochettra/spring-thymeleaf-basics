@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/header :: head('Home')}"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main>
+
+    <!-- ============================
+         HERO SECTION
+         ============================ -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="fade-in-up">
+                        <div class="hero-badge">
+                            <i class="bi bi-stars"></i>
+                            Spring Boot + Thymeleaf
+                        </div>
+                        <h1 class="hero-title">
+                            Build Beautiful<br>
+                            <span class="gradient-text">Web Applications</span><br>
+                            with Ease
+                        </h1>
+                        <p class="hero-subtitle">
+                            A modern full-stack application powered by Spring Boot 3,
+                            Thymeleaf, and PostgreSQL. Clean architecture, beautiful UI.
+                        </p>
+                        <div class="hero-actions">
+                            <a th:href="@{/products}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-seam"></i> Browse Products
+                            </a>
+                            <a th:href="@{/about}" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-info-circle"></i> Learn More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 hero-visual">
+                    <div class="hero-card-stack fade-in-up stagger-2">
+                        <div class="hero-card hero-card-1">
+                            <i class="bi bi-box-seam fs-3"></i>
+                            <span>Products</span>
+                        </div>
+                        <div class="hero-card hero-card-2">
+                            <i class="bi bi-people fs-3"></i>
+                            <span>Users</span>
+                        </div>
+                        <div class="hero-card hero-card-3">
+                            <i class="bi bi-database fs-3"></i>
+                            <span>PostgreSQL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         STATS SECTION
+         ============================ -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card fade-in-up stagger-1">
+                        <div class="stat-icon purple">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div class="stat-number" th:text="${activeProducts}">0</div>
+                        <div class="stat-label">Active Products</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card fade-in-up stagger-2">
+                        <div class="stat-icon blue">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-number" th:text="${activeUsers}">0</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card fade-in-up stagger-3">
+                        <div class="stat-icon green">
+                            <i class="bi bi-tags"></i>
+                        </div>
+                        <div class="stat-number" th:text="${#lists.size(categories)}">0</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card fade-in-up stagger-4">
+                        <div class="stat-icon orange">
+                            <i class="bi bi-lightning-charge"></i>
+                        </div>
+                        <div class="stat-number">3.2</div>
+                        <div class="stat-label">Spring Boot</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         FEATURED PRODUCTS
+         ============================ -->
+    <section class="py-5">
+        <div class="container">
+
+            <div class="d-flex align-items-end justify-content-between mb-4">
+                <div class="section-header mb-0">
+                    <div class="section-badge">
+                        <i class="bi bi-star-fill"></i> Featured
+                    </div>
+                    <h2 class="section-title">Latest Products</h2>
+                    <p class="section-subtitle">Discover our newest additions</p>
+                </div>
+                <a th:href="@{/products}" class="btn btn-outline-primary d-none d-md-inline-flex">
+                    View All <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="row g-4" th:if="${!#lists.isEmpty(recentProducts)}">
+                <div class="col-xl-4 col-md-6 fade-in-up"
+                     th:each="product, iterStat : ${recentProducts}"
+                     th:classappend="'stagger-' + ${iterStat.index + 1}">
+                    <div class="product-card">
+                        <div class="product-card-img">
+                            <img th:if="${product.imageUrl != null}"
+                                 th:src="${product.imageUrl}"
+                                 th:alt="${product.name}"
+                                 loading="lazy"
+                                 onerror="this.parentElement.innerHTML='<div class=\'no-img-placeholder\'>📦</div>'"/>
+                            <div th:unless="${product.imageUrl != null}"
+                                 class="no-img-placeholder">📦</div>
+
+                            <span class="product-badge">
+                                <span th:if="${product.isActive}"
+                                      class="badge badge-active">
+                                    <i class="bi bi-check-circle-fill"></i> Active
+                                </span>
+                                <span th:unless="${product.isActive}"
+                                      class="badge badge-inactive">
+                                    <i class="bi bi-x-circle-fill"></i> Inactive
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="product-card-body">
+                            <div class="product-category"
+                                 th:text="${product.category}">Category</div>
+                            <h5 class="product-name" th:text="${product.name}">Product Name</h5>
+                            <p class="product-description"
+                               th:text="${product.description}">Description</p>
+                        </div>
+
+                        <div class="product-card-footer">
+                            <div>
+                                <div class="product-price"
+                                     th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">
+                                    $0.00
+                                </div>
+                                <div class="product-stock"
+                                     th:classappend="${product.stock <= 5} ? 'low' : (${product.stock <= 20} ? 'medium' : 'good')"
+                                     th:text="${product.stock} + ' in stock'">
+                                    0 in stock
+                                </div>
+                            </div>
+                            <a th:href="@{/products/{id}(id=${product.id})}"
+                               class="btn btn-primary btn-sm">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(recentProducts)}" class="empty-state">
+                <div class="empty-state-icon">📦</div>
+                <h5>No Products Yet</h5>
+                <p>Get started by adding your first product.</p>
+                <a th:href="@{/products/new}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add Product
+                </a>
+            </div>
+
+            <!-- View All (Mobile) -->
+            <div class="text-center mt-4 d-md-none" th:if="${!#lists.isEmpty(recentProducts)}">
+                <a th:href="@{/products}" class="btn btn-outline-primary">
+                    View All Products <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================
+         CATEGORIES
+         ============================ -->
+    <section class="py-5" style="background:var(--white)">
+        <div class="container">
+            <div class="section-header text-center">
+                <div class="section-badge mx-auto">
+                    <i class="bi bi-tags-fill"></i> Browse
+                </div>
+                <h2 class="section-title">Shop by Category</h2>
+                <p class="section-subtitle">Find exactly what you're looking for</p>
+            </div>
+
+            <div class="row g-3 justify-content-center" th:if="${!#lists.isEmpty(categories)}">
+                <div class="col-auto" th:each="cat : ${categories}">
+                    <a th:href="@{/products(category=${cat})}"
+                       class="btn btn-outline-primary shadow-hover">
+                        <i class="bi bi-tag"></i>
+                        <span th:text="${cat}">Category</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         CTA SECTION
+         ============================ -->
+    <section class="py-5"
+             style="background:linear-gradient(135deg,#0f172a,#1e1b4b)">
+        <div class="container text-center">
+            <h2 class="fw-bold text-white mb-3"
+                style="font-family:'Poppins',sans-serif">
+                Ready to Get Started?
+            </h2>
+            <p class="mb-4" style="color:rgba(255,255,255,0.65);font-size:1.05rem">
+                Add your products and manage users with ease.
+            </p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a th:href="@{/products/new}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> Add Product
+                </a>
+                <a th:href="@{/users/new}" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-person-plus"></i> Add User
+                </a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><title>Footer Fragment</title></head>
+<body>
+<footer th:fragment="footer" class="footer">
+    <div class="container">
+        <div class="row g-4">
+
+            <div class="col-lg-4 col-md-6">
+                <div class="footer-brand">
+                    <div class="brand-icon">🌿</div>
+                    <span class="brand-name">BasicThymeleaf</span>
+                </div>
+                <p class="footer-desc">
+                    A beautiful, full-featured Spring Boot + Thymeleaf application
+                    demonstrating modern web development with PostgreSQL.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-link" title="GitHub" aria-label="GitHub">
+                        <i class="bi bi-github" aria-hidden="true"></i>
+                    </a>
+                    <a href="#" class="social-link" title="Twitter" aria-label="Twitter">
+                        <i class="bi bi-twitter-x" aria-hidden="true"></i>
+                    </a>
+                    <a href="#" class="social-link" title="LinkedIn" aria-label="LinkedIn">
+                        <i class="bi bi-linkedin" aria-hidden="true"></i>
+                    </a>
+                    <a href="#" class="social-link" title="YouTube" aria-label="YouTube">
+                        <i class="bi bi-youtube" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6 col-6">
+                <h6 class="footer-title">Navigation</h6>
+                <ul class="footer-links">
+                    <li><a th:href="@{/}">
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i> Home</a></li>
+                    <li><a th:href="@{/products}">
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i> Products</a></li>
+                    <li><a th:href="@{/users}">
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i> Users</a></li>
+                    <li><a th:href="@{/about}">
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i> About</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-6 col-6">
+                <h6 class="footer-title">Products</h6>
+                <ul class="footer-links">
+                    <li><a th:href="@{/products/new}">
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i> Add New</a></li>
+                    <li><a th:href="@{/products(category='Electronics')}">
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i> Electronics</a></li>
+                    <li><a th:href="@{/products(category='Books')}">
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i> Books</a></li>
+                    <li><a th:href="@{/products(category='Sports')}">
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i> Sports</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <h6 class="footer-title">Tech Stack</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge" style="background:rgba(99,102,241,0.15);color:#6366f1;border:1px solid rgba(99,102,241,0.3)">🍃 Spring Boot 3.4</span>
+                    <span class="badge" style="background:rgba(16,185,129,0.15);color:#059669;border:1px solid rgba(16,185,129,0.3)">🔥 Thymeleaf</span>
+                    <span class="badge" style="background:rgba(14,165,233,0.15);color:#0284c7;border:1px solid rgba(14,165,233,0.3)">🐘 PostgreSQL</span>
+                    <span class="badge" style="background:rgba(245,158,11,0.15);color:#b45309;border:1px solid rgba(245,158,11,0.3)">🏗️ Spring Data JPA</span>
+                    <span class="badge" style="background:rgba(239,68,68,0.15);color:#dc2626;border:1px solid rgba(239,68,68,0.3)">🅱️ Bootstrap 5</span>
+                    <span class="badge" style="background:rgba(100,116,139,0.15);color:#475569;border:1px solid rgba(100,116,139,0.3)">🔒 Bean Validation</span>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="footer-divider"/>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center footer-bottom">
+            <span>&copy; 2026 BasicThymeleaf &mdash; Built with
+                <span aria-label="love">❤</span> using Spring Boot
+            </span>
+            <span><i class="bi bi-server me-1" aria-hidden="true"></i> Running on port 8080</span>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

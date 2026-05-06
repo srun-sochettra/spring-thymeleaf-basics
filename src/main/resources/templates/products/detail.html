@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/header :: head(${product.name})}"></head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main>
+
+    <!-- Detail Hero -->
+    <div class="detail-hero">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/}"><i class="bi bi-house"></i> Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/products}">Products</a>
+                    </li>
+                    <li class="breadcrumb-item active" th:text="${product.name}">Product</li>
+                </ol>
+            </nav>
+
+            <div class="row g-5 align-items-center">
+
+                <!-- Image -->
+                <div class="col-lg-5">
+                    <div class="detail-img-container">
+                        <img th:if="${product.imageUrl != null}"
+                             th:src="${product.imageUrl}"
+                             th:alt="${product.name}"
+                             onerror="this.parentElement.innerHTML='<div style=\'height:380px;display:flex;align-items:center;justify-content:center;font-size:4rem;color:var(--gray-400)\'>📦</div>'"/>
+                        <div th:unless="${product.imageUrl != null}"
+                             style="height:380px;display:flex;align-items:center;justify-content:center;font-size:4rem;color:var(--gray-400)">
+                            📦
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="col-lg-7">
+                    <div class="detail-info">
+                        <div class="product-category"
+                             th:text="${product.category}">Category</div>
+
+                        <h1 class="product-title" th:text="${product.name}">Product Name</h1>
+
+                        <div class="product-price-large"
+                             th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">
+                            $0.00
+                        </div>
+
+                        <div class="detail-meta">
+                            <div class="detail-meta-item">
+                                <i class="bi bi-boxes"></i>
+                                <span th:text="${product.stock} + ' units in stock'">0 in stock</span>
+                            </div>
+                            <div class="detail-meta-item">
+                                <i class="bi bi-calendar3"></i>
+                                <span th:text="'Added ' + ${#temporals.format(product.createdAt, 'MMM dd, yyyy')}">Date</span>
+                            </div>
+                            <div class="detail-meta-item">
+                                <span th:if="${product.isActive}"
+                                      class="badge badge-active">
+                                    <i class="bi bi-check-circle-fill"></i> Active
+                                </span>
+                                <span th:unless="${product.isActive}"
+                                      class="badge badge-inactive">
+                                    <i class="bi bi-x-circle-fill"></i> Inactive
+                                </span>
+                            </div>
+                        </div>
+
+                        <p style="color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:2rem"
+                           th:text="${product.description}">Description</p>
+
+                        <div class="d-flex gap-3 flex-wrap">
+                            <a th:href="@{/products/{id}/edit(id=${product.id})}"
+                               class="btn btn-primary btn-lg">
+                                <i class="bi bi-pencil-fill"></i> Edit Product
+                            </a>
+                            <a th:href="@{/products}" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    <div class="container py-3">
+        <div th:if="${successMessage}"
+             class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
+    <!-- Details Card -->
+    <div class="container pb-5">
+        <div class="row g-4">
+
+            <!-- Product Details -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle text-primary"></i>
+                        <h5 class="mb-0 fw-semibold">Product Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label text-muted mb-1" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em">Product ID</label>
+                                <p class="fw-semibold mb-0" th:text="'#' + ${product.id}">#0</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label text-muted mb-1" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em">Category</label>
+                                <p class="fw-semibold mb-0" th:text="${product.category}">Category</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label text-muted mb-1" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em">Price</label>
+                                <p class="fw-semibold mb-0"
+                                   th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0.00</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label text-muted mb-1" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em">Stock</label>
+                                <p class="fw-semibold mb-0"
+                                   th:classappend="${product.stock <= 5} ? 'text-danger' : (${product.stock <= 20} ? 'text-warning' : 'text-success')"
+                                   th:text="${product.stock} + ' units'">0 units</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label text-muted mb-1" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em">Status</label>
+                                <p class="mb-0">
+                                    <span th:if="${product.isActive}" class="badge badge-active">Active</span>
+                                    <span th:unless="${product.isActive}" class="badge badge-inactive">Inactive</span>
+                                </p>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label text-muted mb-1" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em">Last Updated</label>
+                                <p class="fw-semibold mb-0"
+                                   th:text="${#temporals.format(product.updatedAt, 'MMM dd, yyyy HH:mm')}">Date</p>
+                            </div>
+                            <div class="col-12" th:if="${product.description != null}">
+                                <label class="form-label text-muted mb-1" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em">Description</label>
+                                <p class="mb-0" th:text="${product.description}">Description</p>
+                            </div>
+                            <div class="col-12" th:if="${product.imageUrl != null}">
+                                <label class="form-label text-muted mb-1" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:.05em">Image URL</label>
+                                <p class="mb-0 text-break" style="font-size:0.85rem;color:var(--gray-500)"
+                                   th:text="${product.imageUrl}">URL</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Card -->
+            <div class="col-lg-4">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="bi bi-lightning text-warning me-2"></i>Quick Actions
+                        </h6>
+                    </div>
+                    <div class="card-body d-grid gap-2">
+                        <a th:href="@{/products/{id}/edit(id=${product.id})}"
+                           class="btn btn-warning">
+                            <i class="bi bi-pencil-fill"></i> Edit Product
+                        </a>
+
+                        <form th:action="@{/products/{id}/toggle(id=${product.id})}"
+                              method="post">
+                            <button type="submit"
+                                    class="btn w-100"
+                                    th:classappend="${product.isActive} ? 'btn-outline-primary' : 'btn-success'">
+                                <i th:class="${product.isActive} ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"></i>
+                                <span th:text="${product.isActive} ? 'Deactivate' : 'Activate'">Toggle</span>
+                            </button>
+                        </form>
+
+                        <button class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal">
+                            <i class="bi bi-trash3-fill"></i> Delete Product
+                        </button>
+
+                        <a th:href="@{/products}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Products
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="bi bi-clock-history text-info me-2"></i>Timeline
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex gap-3 align-items-start">
+                                <div style="width:8px;height:8px;background:var(--success);border-radius:50%;margin-top:6px;flex-shrink:0"></div>
+                                <div>
+                                    <div style="font-size:0.8rem;font-weight:600;color:var(--gray-700)">Created</div>
+                                    <div style="font-size:0.78rem;color:var(--gray-500)"
+                                         th:text="${#temporals.format(product.createdAt, 'MMMM dd, yyyy')}">Date</div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-3 align-items-start">
+                                <div style="width:8px;height:8px;background:var(--primary);border-radius:50%;margin-top:6px;flex-shrink:0"></div>
+                                <div>
+                                    <div style="font-size:0.8rem;font-weight:600;color:var(--gray-700)">Last Updated</div>
+                                    <div style="font-size:0.78rem;color:var(--gray-500)"
+                                         th:text="${#temporals.format(product.updatedAt, 'MMMM dd, yyyy HH:mm')}">Date</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold">
+                    <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete
+                    <strong th:text="${product.name}">this product</strong>?
+                </p>
+                <div class="alert alert-danger" style="font-size:0.875rem">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                    This action is permanent and cannot be undone.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancel
+                </button>
+                <form th:action="@{/products/{id}/delete(id=${product.id})}"
+                      method="post">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3-fill"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

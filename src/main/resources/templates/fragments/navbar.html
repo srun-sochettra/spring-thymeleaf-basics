@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><title>Navbar Fragment</title></head>
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg">
+    <div class="container">
+
+        <a class="navbar-brand" th:href="@{/}">
+            <div class="brand-icon">🌿</div>
+            <div class="brand-text">Basic<span>Thymeleaf</span></div>
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                aria-controls="navbarMain" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto align-items-center gap-1">
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/}"
+                       th:classappend="${currentUri == '/' or currentUri == '/home'} ? 'active' : ''">
+                        <i class="bi bi-house-door" aria-hidden="true"></i> Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/products}"
+                       th:classappend="${#strings.startsWith(currentUri, '/products')} ? 'active' : ''">
+                        <i class="bi bi-box-seam" aria-hidden="true"></i> Products
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/users}"
+                       th:classappend="${#strings.startsWith(currentUri, '/users')} ? 'active' : ''">
+                        <i class="bi bi-people" aria-hidden="true"></i> Users
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/about}"
+                       th:classappend="${currentUri == '/about'} ? 'active' : ''">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> About
+                    </a>
+                </li>
+
+                <li class="nav-item ms-2">
+                    <a class="btn btn-primary btn-sm" th:href="@{/products/new}">
+                        <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Product
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
