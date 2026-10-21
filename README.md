@@ -40,7 +40,7 @@ Before running the application, ensure you have the following installed:
 1. **Clone the Repository**:
    ```bash
    git clone <repository-url>
-   cd Basic-Thymeleaf
+   cd spring-thymeleaf-basics
    ```
 
 2. **Configure Database**:
