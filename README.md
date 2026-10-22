@@ -1,79 +1,101 @@
-# Basic-Thymeleaf Application
+# Spring Boot Thymeleaf CRUD
 
-A professional, full-stack Spring Boot application demonstrating the integration of **Spring Boot 3.4.5**, **Thymeleaf**, and **PostgreSQL**. This project serves as a robust foundation for building data-driven web applications with modern Java patterns.
+**A server-rendered product and user management exercise with validated forms and PostgreSQL persistence.**
 
-## 🚀 Overview
+Built with Java 21, Spring Boot 3.4.5, Thymeleaf and Spring Data JPA. Shared page fragments, Bootstrap styling and transactional services connect browser forms to relational records. This is an educational demonstration, not a secured administration system or a verified production deployment.
 
-Basic-Thymeleaf is a CRUD (Create, Read, Update, Delete) application for managing **Users** and **Products**. It focuses on clean architecture, server-side validation, and dynamic UI rendering using Thymeleaf fragments.
+## Read before starting
 
-### Key Features
-- **User Management**: Complete CRUD operations for user profiles with role-based attributes.
-- **Product Management**: Inventory management system with category tracking and stock control.
-- **Server-Side Validation**: Robust data integrity using Jakarta Validation (e.g., email format, price range, required fields).
-- **Automated DB Initialization**: Uses `schema.sql` to automatically set up tables and indexes on application startup.
-- **Dynamic UI Components**: Reusable navigation bar and layout fragments for a consistent user experience.
-- **Modern Tech Stack**: Built with Java 21 and Spring Boot 3.4 for maximum performance and security.
+**Startup is destructive to the configured database.** application.properties enables SQL initialisation on every startup, and schema.sql drops products and users with CASCADE before recreating them. DataInitializer then inserts sample records when the tables are empty. Changes do not survive a normal restart under this configuration.
 
-## 🛠️ Tech Stack
+Use a disposable database only. Do not point the application at valuable data. This documentation does not change the reset behaviour. Database credentials are committed in properties; replace and rotate them if used anywhere real. Their values are not repeated here.
 
-- **Backend**: 
-  - [Spring Boot 3.4.5](https://spring.io/projects/spring-boot)
-  - [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
-  - [Lombok](https://projectlombok.org/)
-- **Frontend**:
-  - [Thymeleaf](https://www.thymeleaf.org/)
-  - Semantic HTML5 & CSS3
-- **Database**:
-  - [PostgreSQL](https://www.postgresql.org/)
-- **Build Tool**:
-  - Maven
+## Features
 
-## 📋 Prerequisites
+- Product list, detail, create/edit forms, deletion and active-status toggles.
+- User list, create/edit forms, deletion and active-status toggles.
+- Product keyword search and category selection; user name/email search.
+- Jakarta validation with form re-rendering and field errors.
+- Flash messages after redirects, shared navigation/header/footer fragments and a home dashboard.
+- BigDecimal product prices, stock quantities and database-backed email uniqueness.
 
-Before running the application, ensure you have the following installed:
-- **JDK 21** or higher
-- **PostgreSQL** (running locally or accessible via network)
-- **Maven** (optional, wrapper included)
+User roles and active flags are record attributes, not access-control permissions. No login, password model, Spring Security configuration or authorisation enforcement is supplied. This is not an e-commerce checkout or stock-reservation system.
 
-## ⚙️ Setup & Installation
+## Local development
 
-1. **Clone the Repository**:
-   ```bash
-   git clone <repository-url>
-   cd spring-thymeleaf-basics
-   ```
+Use JDK 21 and an isolated PostgreSQL database named basic_thymeleaf_db, matching the supplied properties. Review the destructive schema first and configure private database connection values. No Docker configuration or environment template is supplied. A root .env file has no supplied loader for direct Maven execution.
 
-2. **Configure Database**:
-   - Create a new PostgreSQL database named `basic_thymeleaf_db`.
-   - Open `src/main/resources/application.properties` and update the credentials:
-     ```properties
-     spring.datasource.username=your_username
-     spring.datasource.password=your_password
-     ```
+Suggested commands from the existing repository root, after those prerequisites:
 
-3. **Run the Application**:
-   Using the Maven wrapper:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-   Or via your IDE (Run `BasicThymeleafApplication.java`).
+```powershell
+.\mvnw.cmd spring-boot:run
+```
 
-4. **Access the App**:
-   Open your browser and navigate to: `http://localhost:8080`
+POSIX equivalent: `sh mvnw spring-boot:run`. The wrapper selects Maven 3.9.15; initial use may download Maven and dependencies. These commands were not executed during this refresh.
 
-## 📂 Project Structure
+The configured server port is 8080. The application supplies home routes at / and /home, plus /about. No separate frontend build or JavaScript package installation is defined.
 
-- `src/main/java/com/example/basicthymeleaf/controller`: Request handlers for web pages.
-- `src/main/java/com/example/basicthymeleaf/model`: JPA entities (User, Product).
-- `src/main/java/com/example/basicthymeleaf/repository`: Spring Data JPA repositories.
-- `src/main/resources/templates`: Thymeleaf HTML templates.
-- `src/main/resources/static`: Static assets (CSS, JS, Images).
-- `src/main/resources/schema.sql`: Database schema definition.
+## Browser routes
 
-## 🛡️ Security & Performance
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | /products | List; optional keyword or category |
+| GET | /products/{id} | Product details |
+| GET | /products/new | Create form |
+| POST | /products | Create |
+| GET | /products/{id}/edit | Edit form |
+| POST | /products/{id}/update | Update |
+| POST | /products/{id}/delete | Delete |
+| POST | /products/{id}/toggle | Toggle active state |
+| GET | /users | List; optional keyword |
+| GET | /users/new | Create form |
+| POST | /users | Create |
+| GET | /users/{id}/edit | Edit form |
+| POST | /users/{id}/update | Update |
+| POST | /users/{id}/delete | Delete |
+| POST | /users/{id}/toggle | Toggle active state |
 
-- **CVE Mitigation**: The `pom.xml` includes explicit version overrides for transitive dependencies (Tomcat, Jackson, Thymeleaf) to ensure protection against known vulnerabilities.
-- **Database Indexing**: Optimized query performance using database indexes on frequently filtered columns (category, email, role).
+These controllers render HTML and redirects, not a JSON REST API. Missing detail/edit records redirect to the list with an error message.
 
----
-*Built with ❤️ for modern Java development.*
+### Search semantics
+
+Product keyword search matches name/description case-insensitively and returns active products only. Category selection matches case-insensitively but does not restrict active state. The unfiltered list includes all products. A non-blank keyword takes precedence over category; the two filters are not combined.
+
+User search matches first name, last name or email case-insensitively, including inactive records. Search is submitted through GET forms, not a live-search API. No pagination is supplied. The user list's active count is global rather than limited to the current search results.
+
+## Validation and data
+
+Products require a 2–100 character name, positive price with at most two fractional digits, non-negative stock and a non-blank category. Description is limited to 500 characters. Users require 2–50 character first/last names, email syntax, a non-blank role and a phone matching optional plus followed by 10–15 digits.
+
+The role dropdown offers four values, but the model only requires a non-blank string; no server-side role allowlist is supplied. Column lengths are not equivalent to complete form validation. Image URLs are stored as text and loaded by the browser; there is no image upload service.
+
+## Architecture
+
+Controllers -> transactional services -> Spring Data JPA repositories -> PostgreSQL.
+
+- [ProductController.java](src/main/java/com/example/basicthymeleaf/controller/ProductController.java): browser workflow and BindingResult handling.
+- [UserServiceImpl.java](src/main/java/com/example/basicthymeleaf/service/UserServiceImpl.java): updates and duplicate-email checks.
+- [ProductRepository.java](src/main/java/com/example/basicthymeleaf/repository/ProductRepository.java): JPQL search and category queries.
+- [schema.sql](src/main/resources/schema.sql): destructive reset, tables and indexes.
+- [DataInitializer.java](src/main/java/com/example/basicthymeleaf/config/DataInitializer.java): sample records.
+
+The POM declares explicit dependency overrides. Comments describing them as safe/latest are not a verified vulnerability assessment. No dependency audit or compatibility build was performed here. Templates still contain older Java/Spring version copy and permission descriptions that are not enforced; this overlay does not edit them.
+
+Bootstrap CSS/JS, icons, fonts and sample images use external hosts. No fully offline, accessibility-conformance or performance guarantee is made. CSS includes ongoing animation without a supplied reduced-motion override.
+
+## Checks
+
+Suggested commands:
+
+```powershell
+.\mvnw.cmd test
+.\mvnw.cmd package
+```
+
+POSIX equivalents use `sh mvnw test` and `sh mvnw package`. The supplied contextLoads test disables SQL initialisation, but still uses the configured datasource and does not disable DataInitializer. Do not run it against valuable data or assume it is an isolated unit test. It has no CRUD/browser assertions.
+
+No dependency resolution, compilation, Maven tests, database access or browser execution was performed during this refresh. Read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and [refresh notes](docs/repository-refresh.md).
+
+## Licence
+
+No root project licence file is supplied. Maven wrapper notices do not establish an application licence. This refresh assigns none.
